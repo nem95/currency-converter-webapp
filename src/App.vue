@@ -82,6 +82,8 @@
       </div>
 
       <PriceHistory v-if="converted" :baseCurrency="baseCurrency" :quoteCurrency="quoteCurrency" :history="rateHistory" :value="value" />
+
+      <ChartHistory v-if="converted" :history="rateHistory"/>
     </div>
   </div>
 </template>
@@ -91,6 +93,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 import PriceHistory from './components/PriceHistory';
+import ChartHistory from './components/ChartHistory';
 import { getItem, setItem, removeItem } from '../utils/localstorage';
 
 const baseURL = 'http://localhost:7777/';
@@ -99,6 +102,7 @@ export default {
   name: 'App',
   components: {
     PriceHistory,
+    ChartHistory,
   },
   data() {
     return {
@@ -150,32 +154,31 @@ export default {
       this.converted = "...";
       this.convertCurrency(this.value);
       this.convertedHistory(this.value);
+    },
+    baseCurrency: function () {
+      if (this.value > 0) {
+        this.convertCurrency(this.value);
+        this.convertedHistory(this.value);
+      }
+    },
+    quoteCurrency: function () {
+      if (this.value > 0) {
+        this.convertCurrency(this.value);
+        this.convertedHistory(this.value);
+      }
     }
   },
   methods: {
     changeBaseCurrency: function (e) {
       this.baseCurrency = e.target.value;
-
-      if (this.value > 0) {
-        this.convertCurrency(this.value);
-      }
     },
     changeQuoteCurrency: function (e) {
       this.quoteCurrency = e.target.value;
-
-      if (this.value > 0) {
-        this.convertCurrency(this.value);
-      }
     },
     swapCurrency: function () {
       const { quoteCurrency, baseCurrency} = this;
       this.quoteCurrency = baseCurrency;
       this.baseCurrency = quoteCurrency;
-
-      if (this.value > 0) {
-        this.convertCurrency(this.value);
-        this.convertedHistory(this.value);
-      }
     },
     convertedHistory: function (value) {
       const history = getItem('history');

@@ -1,5 +1,5 @@
 <template>
-  <div class="table-auto w-full lg:max-w-full  mt-12 bg-gray-100">
+  <div class=" w-full lg:max-w-full h-5 mt-12 bg-gray-100">
     <canvas id="myChart" width="400" height="400"></canvas>
   </div>
 </template>
@@ -23,6 +23,13 @@ export default {
   },
   methods: {
     setChart: function () {
+      const historyObj = Object.values(this.history);
+      const rates = [];
+
+      for (const rate in historyObj) {
+        rates.push(historyObj[rate].rate);
+      }
+
       var ctx = document.getElementById('myChart').getContext('2d');
       new Chart(ctx, {
         type: 'line',
@@ -30,7 +37,7 @@ export default {
           labels: Object.keys(this.history),
           datasets: [{
             label: '# of Votes',
-            data: Object.values(this.history),
+            data: rates,
             backgroundColor: [
               'rgba(255, 99, 32, 0.2)',
               'rgba(54, 162, 235, 0.2)',
@@ -68,5 +75,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

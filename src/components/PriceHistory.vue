@@ -5,16 +5,18 @@
     <table class="table-auto w-full shadow-lg my-4">
       <thead>
         <tr>
-          <th class="px-4 py-2 w-1/3">Date</th>
-          <th class="px-4 py-2 w-1/3">{{baseCurrency}}</th>
-          <th class="px-4 py-2 w-1/3">{{quoteCurrency}}</th>
+          <th class="px-4 py-2 w-1/4">Date</th>
+          <th class="px-4 py-2 w-1/4">{{baseCurrency}}</th>
+          <th class="px-4 py-2 w-1/4">{{quoteCurrency}}</th>
+          <th class="px-4 py-2 w-1/4">From today Gains/Losses</th>
         </tr>
       </thead>
       <tbody >
         <tr v-for="(val, key, index) in history" :key="index">
           <td class="border px-4 py-2">{{ key }}</td>
           <td class="border px-4 py-2">{{ value }}</td>
-          <td class="border px-4 py-2">{{ val }}</td>
+          <td class="border px-4 py-2">{{ val.rate }}</td>
+          <td class="border px-4 py-2">{{ val.gainsLosses }}%</td>
         </tr>
       </tbody>
     </table>

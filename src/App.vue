@@ -95,8 +95,11 @@ import moment from 'moment';
 import PriceHistory from './components/PriceHistory';
 import ChartHistory from './components/ChartHistory';
 import { getItem, setItem, removeItem } from '../utils/localstorage';
+let baseURL = 'http://localhost:7777/';
 
-const baseURL = 'http://localhost:7777/';
+if (process.env.VUE_APP_API_URL) {
+  baseURL = process.env.VUE_APP_API_URL;
+}
 
 export default {
   name: 'App',
@@ -151,20 +154,16 @@ export default {
   },
   watch: {
     value: function () {
-      this.converted = "...";
       this.convertCurrency(this.value);
-      this.convertedHistory(this.value);
     },
     baseCurrency: function () {
       if (this.value > 0) {
         this.convertCurrency(this.value);
-        this.convertedHistory(this.value);
       }
     },
     quoteCurrency: function () {
       if (this.value > 0) {
         this.convertCurrency(this.value);
-        this.convertedHistory(this.value);
       }
     }
   },
@@ -189,8 +188,12 @@ export default {
 
       for (const date in history) {
         const convertedCurrency = (value * history[`${date}`][quoteCurrency]) / history[`${date}`][baseCurrency];
+        const gainsLosses = (((this.converted - convertedCurrency) / (convertedCurrency)) * 100).toFixed(5);
 
-        convertedHistory[date] = convertedCurrency.toFixed(5);
+        convertedHistory[date] = {
+          rate: convertedCurrency.toFixed(5),
+          gainsLosses
+        };
       }
 
       return this.rateHistory = convertedHistory;
@@ -199,7 +202,9 @@ export default {
       try {
         const res = await axios.get(`${baseURL}convert?base_currency=${this.baseCurrency}&quote_currency=${this.quoteCurrency}&value=${value}`);
 
-        return this.converted = res.data.toFixed(3);
+        this.converted = res.data.toFixed(3);
+        this.convertedHistory(this.value);
+        return;
       } catch (error) {
         console.log(error);
       }
